@@ -1,57 +1,33 @@
 .road-container {
+    background-image: url('../images/roads2.png');
+    background-size: 100% 100%;
     display: flex;
     flex-direction: column;
-    height: 60vh;
+    height: 600px;
     min-height: 350px;
-    width: 100%;
+    width: 600px;
     align-items: stretch;
     justify-content: stretch;
-    border-top: 10px solid #81bf85;
-    border-bottom: 10px solid #81bf85;
     overflow: hidden;
     max-width: 1920px;
     margin: 0 auto;
   
     .lane {
       box-sizing: border-box;
-      min-height: 110px;
-      height: 33.33%;
-      background: #212121 url('../images/lane-border.png') repeat-x bottom left;
+      height: 150px;
+      margin-top: 46px;
       display: flex;
       align-items: center;
       position: relative;
-  
-      &::before {
-        content: 'NORMAL LANE';
-        position: absolute;
-        left: 0;
-        right: 0;
-        top: calc(50% - 1.5rem);
-        font-size: 3rem;
-        line-height: 3rem;
-        font-weight: 600;
-        color: rgba(255, 255, 255, 0.7);
-        text-align: center;
-      }
-  
-      &.lane-2 {
-        &::before {
-          content: 'NORMAL LANE';
+
+      .vehicle {
+        animation-duration: 10s;
+      
+        @for $i from 1 through 30 {
+          &:nth-child(#{$i}) {
+            animation-delay: #{0.83 * ($i - 1)}s;
+          }
         }
-      }
-  
-      &.priority {
-        &::before {
-          content: 'PRIORITY LANE';
-        }
-      }
-  
-      &:last-child {
-        background-image: none;
-      }
-  
-      &.priority {
-        background-color: #994424;
       }
     }
   }
@@ -66,36 +42,85 @@
     position: absolute;
     left: -200px;
     top: calc(50% - 60px);
+
+    animation: move 10s infinite linear;
   
     &.car {
-      background-image: url('../images/car-1.svg');
+      background-image: url('../images/car-1.png');
   
       @for $i from 1 through 7 {
         &.car-#{$i} {
-          background-image: url('../images/car-#{$i}.svg');
+          background-image: url('../images/car-#{$i}.png');
         }
       }
   
       &.police {
-        background-image: url('../images/police.svg');
+        background-image: url('../images/police.png');
       }
   
       &.ambulance {
-        background-image: url('../images/ambulance.svg');
+        background-image: url('../images/ambulance.png');
       }
   
       &.taxi {
-        background-image: url('../images/taxi.svg');
+        background-image: url('../images/taxi.png');
       }
     }
   
     &.bus {
-      background-image: url('../images/bus.svg');
+      background-image: url('../images/bus.png');
       min-width: 120px;
     }
   
     &.truck {
-      background-image: url('../images/truck.svg');
+      background-image: url('../images/truck.png');
       min-width: 170px;
     }
   }
+
+  @keyframes move {
+    to {
+      transform: translateX(2200px);
+    }
+  }
+  
+  @keyframes move-bus {
+    40%, 100% {
+      transform: translateX(2200px);
+    }
+  }
+
+  .traffic-light-1 {
+    position: absolute;
+    background-image: url('../images/traffic-light-red.png');
+    background-size: 100% 100%;
+    height: 55px;
+    width: 40px;
+    margin-left: 510px;
+  }
+
+  .traffic-light-2 {
+    position: absolute;
+    background-image: url('../images/traffic-light-green.png');
+    background-size: 100% 100%;
+    height: 55px;
+    width: 40px;
+    transform: rotate(90deg);
+    margin-left: 545px;
+    margin-top: 148px;
+  }
+
+  
+
+  /*.roads {
+    display: flex;
+    flex-direction: column;
+    height: 70vh;
+    width: 70vh;
+    background-image: url('../images/roads2.png');
+    background-size: 100% 100%;
+    overflow: hidden;
+    align-items: stretch;
+    justify-content: stretch;
+    max-width: 1920px;
+  }*/

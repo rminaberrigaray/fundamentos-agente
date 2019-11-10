@@ -1,49 +1,117 @@
 .road-container {
+  background-image: url("../images/roads2.png");
+  background-size: 100% 100%;
   display: flex;
   flex-direction: column;
-  height: 60vh;
+  height: 600px;
   min-height: 350px;
-  width: 100%;
+  width: 600px;
   align-items: stretch;
   justify-content: stretch;
-  border-top: 10px solid #81bf85;
-  border-bottom: 10px solid #81bf85;
   overflow: hidden;
   max-width: 1920px;
   margin: 0 auto;
 }
 .road-container .lane {
   box-sizing: border-box;
-  min-height: 110px;
-  height: 33.33%;
-  background: #212121 url("../images/lane-border.png") repeat-x bottom left;
+  height: 150px;
+  margin-top: 46px;
   display: flex;
   align-items: center;
   position: relative;
 }
-.road-container .lane::before {
-  content: "NORMAL LANE";
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: calc(50% - 1.5rem);
-  font-size: 3rem;
-  line-height: 3rem;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.7);
-  text-align: center;
+.road-container .lane .vehicle {
+  animation-duration: 10s;
 }
-.road-container .lane.lane-2::before {
-  content: "NORMAL LANE";
+.road-container .lane .vehicle:nth-child(1) {
+  animation-delay: 0s;
 }
-.road-container .lane.priority::before {
-  content: "PRIORITY LANE";
+.road-container .lane .vehicle:nth-child(2) {
+  animation-delay: 0.83s;
 }
-.road-container .lane:last-child {
-  background-image: none;
+.road-container .lane .vehicle:nth-child(3) {
+  animation-delay: 1.66s;
 }
-.road-container .lane.priority {
-  background-color: #994424;
+.road-container .lane .vehicle:nth-child(4) {
+  animation-delay: 2.49s;
+}
+.road-container .lane .vehicle:nth-child(5) {
+  animation-delay: 3.32s;
+}
+.road-container .lane .vehicle:nth-child(6) {
+  animation-delay: 4.15s;
+}
+.road-container .lane .vehicle:nth-child(7) {
+  animation-delay: 4.98s;
+}
+.road-container .lane .vehicle:nth-child(8) {
+  animation-delay: 5.81s;
+}
+.road-container .lane .vehicle:nth-child(9) {
+  animation-delay: 6.64s;
+}
+.road-container .lane .vehicle:nth-child(10) {
+  animation-delay: 7.47s;
+}
+.road-container .lane .vehicle:nth-child(11) {
+  animation-delay: 8.3s;
+}
+.road-container .lane .vehicle:nth-child(12) {
+  animation-delay: 9.13s;
+}
+.road-container .lane .vehicle:nth-child(13) {
+  animation-delay: 9.96s;
+}
+.road-container .lane .vehicle:nth-child(14) {
+  animation-delay: 10.79s;
+}
+.road-container .lane .vehicle:nth-child(15) {
+  animation-delay: 11.62s;
+}
+.road-container .lane .vehicle:nth-child(16) {
+  animation-delay: 12.45s;
+}
+.road-container .lane .vehicle:nth-child(17) {
+  animation-delay: 13.28s;
+}
+.road-container .lane .vehicle:nth-child(18) {
+  animation-delay: 14.11s;
+}
+.road-container .lane .vehicle:nth-child(19) {
+  animation-delay: 14.94s;
+}
+.road-container .lane .vehicle:nth-child(20) {
+  animation-delay: 15.77s;
+}
+.road-container .lane .vehicle:nth-child(21) {
+  animation-delay: 16.6s;
+}
+.road-container .lane .vehicle:nth-child(22) {
+  animation-delay: 17.43s;
+}
+.road-container .lane .vehicle:nth-child(23) {
+  animation-delay: 18.26s;
+}
+.road-container .lane .vehicle:nth-child(24) {
+  animation-delay: 19.09s;
+}
+.road-container .lane .vehicle:nth-child(25) {
+  animation-delay: 19.92s;
+}
+.road-container .lane .vehicle:nth-child(26) {
+  animation-delay: 20.75s;
+}
+.road-container .lane .vehicle:nth-child(27) {
+  animation-delay: 21.58s;
+}
+.road-container .lane .vehicle:nth-child(28) {
+  animation-delay: 22.41s;
+}
+.road-container .lane .vehicle:nth-child(29) {
+  animation-delay: 23.24s;
+}
+.road-container .lane .vehicle:nth-child(30) {
+  animation-delay: 24.07s;
 }
 
 .vehicle {
@@ -56,47 +124,91 @@
   position: absolute;
   left: -200px;
   top: calc(50% - 60px);
+  animation: move 10s infinite linear;
 }
 .vehicle.car {
-  background-image: url("../images/car-1.svg");
+  background-image: url("../images/car-1.png");
 }
 .vehicle.car.car-1 {
-  background-image: url("../images/car-1.svg");
+  background-image: url("../images/car-1.png");
 }
 .vehicle.car.car-2 {
-  background-image: url("../images/car-2.svg");
+  background-image: url("../images/car-2.png");
 }
 .vehicle.car.car-3 {
-  background-image: url("../images/car-3.svg");
+  background-image: url("../images/car-3.png");
 }
 .vehicle.car.car-4 {
-  background-image: url("../images/car-4.svg");
+  background-image: url("../images/car-4.png");
 }
 .vehicle.car.car-5 {
-  background-image: url("../images/car-5.svg");
+  background-image: url("../images/car-5.png");
 }
 .vehicle.car.car-6 {
-  background-image: url("../images/car-6.svg");
+  background-image: url("../images/car-6.png");
 }
 .vehicle.car.car-7 {
-  background-image: url("../images/car-7.svg");
+  background-image: url("../images/car-7.png");
 }
 .vehicle.car.police {
-  background-image: url("../images/police.svg");
+  background-image: url("../images/police.png");
 }
 .vehicle.car.ambulance {
-  background-image: url("../images/ambulance.svg");
+  background-image: url("../images/ambulance.png");
 }
 .vehicle.car.taxi {
-  background-image: url("../images/taxi.svg");
+  background-image: url("../images/taxi.png");
 }
 .vehicle.bus {
-  background-image: url("../images/bus.svg");
+  background-image: url("../images/bus.png");
   min-width: 120px;
 }
 .vehicle.truck {
-  background-image: url("../images/truck.svg");
+  background-image: url("../images/truck.png");
   min-width: 170px;
 }
+
+@keyframes move {
+  to {
+    transform: translateX(2200px);
+  }
+}
+@keyframes move-bus {
+  40%, 100% {
+    transform: translateX(2200px);
+  }
+}
+.traffic-light-1 {
+  position: absolute;
+  background-image: url("../images/traffic-light-red.png");
+  background-size: 100% 100%;
+  height: 55px;
+  width: 40px;
+  margin-left: 510px;
+}
+
+.traffic-light-2 {
+  position: absolute;
+  background-image: url("../images/traffic-light-green.png");
+  background-size: 100% 100%;
+  height: 55px;
+  width: 40px;
+  transform: rotate(90deg);
+  margin-left: 545px;
+  margin-top: 148px;
+}
+
+/*.roads {
+  display: flex;
+  flex-direction: column;
+  height: 70vh;
+  width: 70vh;
+  background-image: url('../images/roads2.png');
+  background-size: 100% 100%;
+  overflow: hidden;
+  align-items: stretch;
+  justify-content: stretch;
+  max-width: 1920px;
+}*/
 
 /*# sourceMappingURL=example.css.map */
