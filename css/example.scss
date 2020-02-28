@@ -23,11 +23,7 @@
       .vehicle {
         animation-duration: 10s;
       
-        @for $i from 1 through 30 {
-          &:nth-child(#{$i}) {
-            animation-delay: #{0.83 * ($i - 1)}s;
-          }
-        }
+        
       }
     }
   }
@@ -43,7 +39,7 @@
     left: -200px;
     top: calc(50% - 60px);
 
-    animation: move 10s infinite linear;
+    animation: move 10s linear;
   
     &.car {
       background-image: url('../images/car-1.png');
@@ -89,17 +85,8 @@
       transform: translateX(2200px);
     }
   }
-
+  
   .traffic-light-1 {
-    position: absolute;
-    background-image: url('../images/traffic-light-red.png');
-    background-size: 100% 100%;
-    height: 55px;
-    width: 40px;
-    margin-left: 510px;
-  }
-
-  .traffic-light-2 {
     position: absolute;
     background-image: url('../images/traffic-light-green.png');
     background-size: 100% 100%;
@@ -109,7 +96,15 @@
     margin-left: 545px;
     margin-top: 148px;
   }
-
+  
+  .traffic-light-2 {
+    position: absolute;
+    background-image: url('../images/traffic-light-red.png');
+    background-size: 100% 100%;
+    height: 55px;
+    width: 40px;
+    margin-left: 510px;
+  }
   
 
   /*.roads {

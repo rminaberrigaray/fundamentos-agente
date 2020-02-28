@@ -12,7 +12,6 @@ let vehicleClass = ['car', 'truck'];
 let priorityVehicles = ['taxi', 'emergency'];
 let lane1Reset = '';
 let lane2Reset = '';
-let lane3Reset = '';
 let carSpace = 200;     //Space a car takes
 let busSpace = 200;     //Space a bus takes
 let truckSpace = 200;   //Space a truck takes
@@ -20,13 +19,11 @@ let totalLane = 2200;   //Total lane width
 let occupy = 100;        //Percentage of occupancy on the lane
 let lane1Counter = 0;
 let lane2Counter = 0;
-let lane3Counter = 0;
 
 (function ($) {
     $(document).ready(function () {
         lane1Reset = $('#lane-1').html();
         lane2Reset = $('#lane-2').html();
-        lane3Reset = $('#lane-3').html();
         resetVehicleDisplay();
 
         $('.add-vehicle').on('click', function(e) {
@@ -40,18 +37,16 @@ let lane3Counter = 0;
 function resetVehicleDisplay() {
     $('#lane-1').html(lane1Reset);
     $('#lane-2').html(lane2Reset);
-    $('#lane-3').html(lane3Reset);
     lane1Counter = 0;
     lane2Counter = 0;
-    lane3Counter = 0;
 
     let vehicle = '';
     let carClass = '';
     let lane1Count = $('#lane-1').children('.car').length + $('#lane-1').children('.truck').length;
     let lane2Count = $('#lane-2').children('.car').length + $('#lane-2').children('.truck').length;
-    let lane3Count = $('#lane-3').children('.car').length + $('#lane-3').children('.bus').length + $('#lane-3').children('.truck').length;
+    //let lane3Count = $('#lane-3').children('.car').length + $('#lane-3').children('.bus').length + $('#lane-3').children('.truck').length;
 
-    let spaceRemaining = Math.floor(totalLane * occupy / 100);
+    /*let spaceRemaining = Math.floor(totalLane * occupy / 100);
 
     let haveSpace = true;
 
@@ -104,10 +99,10 @@ function resetVehicleDisplay() {
         if (lane1Filled && lane2Filled) {
             haveSpace = false;
         }
-    }
+    }*/
 
     //fill lane 3
-    haveSpace = true;
+    /*haveSpace = true;
 
     while (haveSpace) {
 
@@ -139,19 +134,18 @@ function resetVehicleDisplay() {
         if (lane3Filled) {
             haveSpace = false;
         }
-    }
+    }*/
 
-    if(occupy < 65) {
+    /*if(occupy < 65) {
         $('.road-container').removeClass('slowest').removeClass('slow');
     } else if (occupy >= 65) {
         $('.road-container').removeClass('slowest').addClass('slow');
     } else if (occupy == 100) {
         $('.road-container').removeClass('slow').addClass('slowest');
-    }
+    }*/
 
     $('#lane-1-count').html(lane1Counter);
     $('#lane-2-count').html(lane2Counter);
-    $('#lane-3-count').html(lane3Counter);
 
     $(document).find('.vehicle').each(function (index, item) {
         $(item).onVehiclePassed(vehiclePassedBy);
@@ -164,13 +158,12 @@ function vehiclePassedBy(vehicle) {
         lane1Counter++;
     } else if (lane == 'lane-2') {
         lane2Counter++;
-    } else if (lane == 'lane-3') {
-        lane3Counter++;
     }
+    $("#x-"+lane1Counter).remove();
+    //cars.shift();
 
     $('#lane-1-count').html(lane1Counter);
     $('#lane-2-count').html(lane2Counter);
-    $('#lane-3-count').html(lane3Counter);
 }
 
 /**
@@ -180,24 +173,48 @@ function vehiclePassedBy(vehicle) {
  * @returns {jQuery|HTMLElement}
  */
 jQuery.fn.onVehiclePassed = function (trigger, millis) {
-    let checkPoint = window.innerWidth - 50;
+    let checkPoint = $("#traffic-light-1").position().left - 100;
     if (millis == null) millis = 50;
     let o = $(this[0]); // our jquery object
     if (o.length < 1) return o;
 
+    console.log(o);
+
     let lastPos = null;
-    setInterval(function () {
+    let interval = setInterval(function () {
         if (o == null || o.length < 1) return o; // abort if element is non existent
 
         let newPos = o.position().left;
 
+        //console.log(o, lastPos, newPos);
+
         if (lastPos < checkPoint && newPos >= checkPoint) {
-            $(this).trigger('onVehiclePassed', {vehicle: o});
-            if (typeof (trigger) == "function") trigger(o);
+            vehiclePassedBy(o);
+            //$(this).trigger('onVehiclePassed', {vehicle: o});
+            //if (typeof (trigger) == "function") trigger(o);
+            clearInterval(interval);
         }
         lastPos = newPos;
     }, millis);
 
     return o;
 };
+var cars = [];
+var carsCount = 0;
+$("#agregar").click(function() {
+    /*cars.push({type: 'car'});
+    $('#lane-1').html(lane1Reset);
+    cars.forEach(function(car, index) {
+        $("#lane-1").append(`<div id="x-${index}" class="vehicle car"></div>`);
+    });
+    $("#lane-1").find(`.vehicle`).each(function (index, item) {
+        $(item).onVehiclePassed(vehiclePassedBy);
+    });*/
+    
+    carsCount++;
+    $("#lane-1").append(`<div id="x-${carsCount}" class="vehicle car"></div>`);
+    $("#lane-1").find(`#x-${carsCount}`).each(function (index, item) {
+        $(item).onVehiclePassed(vehiclePassedBy);
+    });
+});
 
