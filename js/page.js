@@ -6,6 +6,12 @@
  * @author_url http://ashiqur.com
  **/
 
+ const TRAFFIC_FRECUENCY = {
+     low: 3000,
+     medium: 1500,
+     high: 800
+ };
+
 let vehicleEl = '<div class="vehicle %vehicle-class%"></div>';
 let emergencyClass = ['police', 'ambulance'];
 let vehicleClass = ['car', 'truck'];
@@ -19,6 +25,16 @@ let totalLane = 2200;   //Total lane width
 let occupy = 100;        //Percentage of occupancy on the lane
 let lane1Counter = 0;
 let lane2Counter = 0;
+let carsCount = 0;
+let trafficInterval;
+
+let addVehicle = function () {
+    carsCount++;
+    $("#lane-1").append(`<div id="x-${carsCount}" class="vehicle car"></div>`);
+    $("#lane-1").find(`#x-${carsCount}`).each(function (index, item) {
+        $(item).onVehiclePassed(vehiclePassedBy);
+    });
+};
 
 (function ($) {
     $(document).ready(function () {
@@ -26,11 +42,8 @@ let lane2Counter = 0;
         lane2Reset = $('#lane-2').html();
         resetVehicleDisplay();
 
-        $('.add-vehicle').on('click', function(e) {
-            e.preventDefault();
-            occupy = $('input#occupy').val();
-            resetVehicleDisplay();
-        });
+        trafficInterval = setInterval(addVehicle, TRAFFIC_FRECUENCY.high);
+
     });
 })(jQuery);
 
@@ -173,7 +186,7 @@ function vehiclePassedBy(vehicle) {
  * @returns {jQuery|HTMLElement}
  */
 jQuery.fn.onVehiclePassed = function (trigger, millis) {
-    let checkPoint = $("#traffic-light-1").position().left - 100;
+    let checkPoint = $("#traffic-light-1").offset().left + 50;
     if (millis == null) millis = 50;
     let o = $(this[0]); // our jquery object
     if (o.length < 1) return o;
@@ -184,7 +197,7 @@ jQuery.fn.onVehiclePassed = function (trigger, millis) {
     let interval = setInterval(function () {
         if (o == null || o.length < 1) return o; // abort if element is non existent
 
-        let newPos = o.position().left;
+        let newPos = o.offset().left;
 
         //console.log(o, lastPos, newPos);
 
@@ -199,8 +212,7 @@ jQuery.fn.onVehiclePassed = function (trigger, millis) {
 
     return o;
 };
-var cars = [];
-var carsCount = 0;
+
 $("#agregar").click(function() {
     /*cars.push({type: 'car'});
     $('#lane-1').html(lane1Reset);
@@ -215,6 +227,25 @@ $("#agregar").click(function() {
     $("#lane-1").append(`<div id="x-${carsCount}" class="vehicle car"></div>`);
     $("#lane-1").find(`#x-${carsCount}`).each(function (index, item) {
         $(item).onVehiclePassed(vehiclePassedBy);
+    });
+});
+
+$(".change-frecuency").click(function() {
+    $(document).find('.vehicle').each(function (index, item) {
+        item.style.animationPlayState="running";
+    });
+    let frecuency = $(this).data("traffic");
+    clearInterval(trafficInterval);
+    trafficInterval = setInterval(addVehicle, TRAFFIC_FRECUENCY[frecuency]);
+});
+
+$("#stop").click(function() {
+    $(document).find('.vehicle').each(function (index, item) {
+        clearInterval(trafficInterval);
+        let checkPoint = $("#traffic-light-1").offset().left - 200;
+        if ($(item).offset().left < checkPoint) {
+            item.style.animationPlayState="paused";
+        }
     });
 });
 
