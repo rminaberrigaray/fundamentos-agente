@@ -191,8 +191,6 @@ jQuery.fn.onVehiclePassed = function (trigger, millis) {
     let o = $(this[0]); // our jquery object
     if (o.length < 1) return o;
 
-    console.log(o);
-
     let lastPos = null;
     let interval = setInterval(function () {
         if (o == null || o.length < 1) return o; // abort if element is non existent
@@ -240,11 +238,14 @@ $(".change-frecuency").click(function() {
 });
 
 $("#stop").click(function() {
+    let checkPoint = $("#traffic-light-1").offset().left - 200;
+    let position = 0;
     $(document).find('.vehicle').each(function (index, item) {
         clearInterval(trafficInterval);
-        let checkPoint = $("#traffic-light-1").offset().left - 200;
         if ($(item).offset().left < checkPoint) {
             item.style.animationPlayState="paused";
+            $(item).animate({ "left": `+=${checkPoint - $(item).offset().left - (position * 100)}px` }, 2000 );
+            position++;
         }
     });
 });
