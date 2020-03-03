@@ -1,9 +1,10 @@
 /**
- * Handle the vehicle functionality
+ * Traffic animations and lights control
  *
- * @author Ashiqur Rahman
- * @url http://choobs.com
- * @author_url http://ashiqur.com
+ * Some of the code was taken and adapted from https://github.com/ashiqur-rony/css-traffic-simulator
+ * 
+ * @author Rodrigo Minaberrigaray <rodrigo.minaberrigaray@gmail.com>
+ * @author_url https://github.com/rminaberrigaray
  **/
 
  const TRAFFIC_FRECUENCY = {
@@ -13,39 +14,123 @@
  };
 
 let vehicleEl = '<div class="vehicle %vehicle-class%"></div>';
-let emergencyClass = ['police', 'ambulance'];
-let vehicleClass = ['car', 'truck'];
-let priorityVehicles = ['taxi', 'emergency'];
-let lane1Reset = '';
-let lane2Reset = '';
-let carSpace = 200;     //Space a car takes
-let busSpace = 200;     //Space a bus takes
-let truckSpace = 200;   //Space a truck takes
-let totalLane = 2200;   //Total lane width
-let occupy = 100;        //Percentage of occupancy on the lane
+//let emergencyClass = ['police', 'ambulance'];
+//let vehicleClass = ['car', 'truck'];
+//let priorityVehicles = ['taxi', 'emergency'];
+//let carSpace = 200;     //Space a car takes
+//let busSpace = 200;     //Space a bus takes
+//let truckSpace = 200;   //Space a truck takes
+//let totalLane = 2200;   //Total lane width
+//let occupy = 100;        //Percentage of occupancy on the lane
+
+let lanes = {
+    x: {
+       id: "#lane-1",
+       axis: "x",
+       carsCount: 0,
+       light: "#traffic-light-1",
+       offset: 'left',
+       interval: null
+    },
+    y: {
+       id: "#lane-2",
+       axis: "y",
+       carsCount: 0,
+       light: "#traffic-light-2",
+       offset: 'top',
+       interval: null
+    }
+}
 let lane1Counter = 0;
 let lane2Counter = 0;
 let carsCount = 0;
-let trafficInterval;
+let trafficIntervalX;
+let trafficIntervalY;
 
-let addVehicle = function () {
-    carsCount++;
-    $("#lane-1").append(`<div id="x-${carsCount}" class="vehicle car"></div>`);
-    $("#lane-1").find(`#x-${carsCount}`).each(function (index, item) {
-        $(item).onVehiclePassed(vehiclePassedBy);
+let addVehicle = function (lane) {
+    let vehicleClass = 'car';
+    lane.carsCount++;
+    $(lane.id).append(`<div id="${lane.axis}-${lane.carsCount}" class="vehicle ${vehicleClass}"></div>`);
+    $(lane.id).find(`#${lane.axis}-${lane.carsCount}`).each(function (index, item) {
+        $(item).onVehiclePassed(vehiclePassedBy, lane);
     });
 };
 
 (function ($) {
     $(document).ready(function () {
-        lane1Reset = $('#lane-1').html();
-        lane2Reset = $('#lane-2').html();
-        resetVehicleDisplay();
-
-        trafficInterval = setInterval(addVehicle, TRAFFIC_FRECUENCY.high);
+        lanes.x.interval = setInterval(addVehicle.bind(null, lanes.x), TRAFFIC_FRECUENCY.high);
+       // trafficIntervaly = setInterval(addVehicle.bind(null, lanes.y), TRAFFIC_FRECUENCY.high);
 
     });
 })(jQuery);
+
+/**
+ * Extension to handle element passed out of viewport
+ * @param trigger
+ * @param millis
+ * @returns {jQuery|HTMLElement}
+ */
+jQuery.fn.onVehiclePassed = function (trigger, lane) {
+    let checkPoint = $(lane.light).offset()[lane.offset] + 50;
+    let o = $(this[0]); // our jquery object
+    if (o.length < 1) return o;
+
+    let lastPos = null;
+    let interval = setInterval(function () {
+        if (o == null || o.length < 1) return o; // abort if element is non existent
+
+        let newPos = o.offset()[lane.offset];
+
+        if (lastPos < checkPoint && newPos >= checkPoint) {
+            $(o).remove();
+            clearInterval(interval);
+        }
+        lastPos = newPos;
+    }, 50);
+
+    return o;
+};
+
+$(".change-frecuency").click(function() {
+    let frecuency = $(this).data("traffic");
+    let lane = lanes[$(this).data("lane")];
+
+    $(lane.id).find('.vehicle').each(function (index, item) {
+        item.style.animationPlayState="running";
+    });
+    clearInterval(lane.interval);
+    lane.interval = setInterval(addVehicle.bind(null, lane), TRAFFIC_FRECUENCY[frecuency]);
+});
+
+$("#stop").click(function() {
+    let lane = lanes[$(this).data("lane")];
+    let checkPoint = $(lane.light).offset()[lane.offset] - 200;
+    let position = 0;
+    $(lane.id).find('.vehicle').each(function (index, item) {
+        clearInterval(lane.interval);
+        if ($(item).offset()[lane.offset] < checkPoint) {
+            item.style.animationPlayState="paused";
+            $(item).animate({ "left": `+=${checkPoint - $(item).offset().left - (position * 100)}px` }, 2000 );
+            position++;
+        }
+    });
+});
+
+function vehiclePassedBy(vehicle) {
+    let lane = $(vehicle).closest('.lane').attr('id');
+    let selector = null;
+    if (lane == 'lane-1') {
+        lane1Counter++;
+        selector = "#x-"+lane1Counter;
+    } else if (lane == 'lane-2') {
+        lane2Counter++;
+        selector = "#y-"+lane2Counter;
+    }
+    $(selector).remove();
+
+    $('#lane-1-count').html(lane1Counter);
+    $('#lane-2-count').html(lane2Counter);
+}
 
 function resetVehicleDisplay() {
     $('#lane-1').html(lane1Reset);
@@ -165,88 +250,4 @@ function resetVehicleDisplay() {
     });
 }
 
-function vehiclePassedBy(vehicle) {
-    let lane = $(vehicle).closest('.lane').attr('id');
-    if (lane == 'lane-1') {
-        lane1Counter++;
-    } else if (lane == 'lane-2') {
-        lane2Counter++;
-    }
-    $("#x-"+lane1Counter).remove();
-    //cars.shift();
-
-    $('#lane-1-count').html(lane1Counter);
-    $('#lane-2-count').html(lane2Counter);
-}
-
-/**
- * Extension to handle element passed out of viewport
- * @param trigger
- * @param millis
- * @returns {jQuery|HTMLElement}
- */
-jQuery.fn.onVehiclePassed = function (trigger, millis) {
-    let checkPoint = $("#traffic-light-1").offset().left + 50;
-    if (millis == null) millis = 50;
-    let o = $(this[0]); // our jquery object
-    if (o.length < 1) return o;
-
-    let lastPos = null;
-    let interval = setInterval(function () {
-        if (o == null || o.length < 1) return o; // abort if element is non existent
-
-        let newPos = o.offset().left;
-
-        //console.log(o, lastPos, newPos);
-
-        if (lastPos < checkPoint && newPos >= checkPoint) {
-            vehiclePassedBy(o);
-            //$(this).trigger('onVehiclePassed', {vehicle: o});
-            //if (typeof (trigger) == "function") trigger(o);
-            clearInterval(interval);
-        }
-        lastPos = newPos;
-    }, millis);
-
-    return o;
-};
-
-$("#agregar").click(function() {
-    /*cars.push({type: 'car'});
-    $('#lane-1').html(lane1Reset);
-    cars.forEach(function(car, index) {
-        $("#lane-1").append(`<div id="x-${index}" class="vehicle car"></div>`);
-    });
-    $("#lane-1").find(`.vehicle`).each(function (index, item) {
-        $(item).onVehiclePassed(vehiclePassedBy);
-    });*/
-    
-    carsCount++;
-    $("#lane-1").append(`<div id="x-${carsCount}" class="vehicle car"></div>`);
-    $("#lane-1").find(`#x-${carsCount}`).each(function (index, item) {
-        $(item).onVehiclePassed(vehiclePassedBy);
-    });
-});
-
-$(".change-frecuency").click(function() {
-    $(document).find('.vehicle').each(function (index, item) {
-        item.style.animationPlayState="running";
-    });
-    let frecuency = $(this).data("traffic");
-    clearInterval(trafficInterval);
-    trafficInterval = setInterval(addVehicle, TRAFFIC_FRECUENCY[frecuency]);
-});
-
-$("#stop").click(function() {
-    let checkPoint = $("#traffic-light-1").offset().left - 200;
-    let position = 0;
-    $(document).find('.vehicle').each(function (index, item) {
-        clearInterval(trafficInterval);
-        if ($(item).offset().left < checkPoint) {
-            item.style.animationPlayState="paused";
-            $(item).animate({ "left": `+=${checkPoint - $(item).offset().left - (position * 100)}px` }, 2000 );
-            position++;
-        }
-    });
-});
 
