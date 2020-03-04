@@ -13,6 +13,8 @@
      high: 800
  };
 
+ const MAX_LANE_CARS = 5;
+
 let vehicleEl = '<div class="vehicle %vehicle-class%"></div>';
 //let emergencyClass = ['police', 'ambulance'];
 //let vehicleClass = ['car', 'truck'];
@@ -30,7 +32,8 @@ let lanes = {
        carsCount: 0,
        light: "#traffic-light-1",
        offset: 'left',
-       interval: null
+       interval: null,
+       stopped: false
     },
     y: {
        id: "#lane-2",
@@ -38,7 +41,8 @@ let lanes = {
        carsCount: 0,
        light: "#traffic-light-2",
        offset: 'top',
-       interval: null
+       interval: null,
+       stopped: true
     }
 }
 let lane1Counter = 0;
@@ -48,12 +52,19 @@ let trafficIntervalX;
 let trafficIntervalY;
 
 let addVehicle = function (lane) {
-    let vehicleClass = 'car';
-    lane.carsCount++;
-    $(lane.id).append(`<div id="${lane.axis}-${lane.carsCount}" class="vehicle ${vehicleClass}"></div>`);
-    $(lane.id).find(`#${lane.axis}-${lane.carsCount}`).each(function (index, item) {
-        $(item).onVehiclePassed(vehiclePassedBy, lane);
-    });
+    //console.log(lane.carsCount);
+    if (lane.carsCount < MAX_LANE_CARS) {
+        let vehicleClass = 'car';
+        let vehicleElement = `<div class="vehicle ${vehicleClass}"></div>`;
+        let vehicle = $(vehicleElement).appendTo(`${lane.id}`);
+        lane.carsCount++;
+        $(vehicle).onVehiclePassed(lane);
+        if (lane.stopped) {
+            let checkPoint = $(lane.light).offset()[lane.offset] - 200;
+            $(vehicle).css('animationPlayState', 'paused');
+            $(vehicle).animate({ "left": `+=${checkPoint - $(vehicle).offset().left - ((lane.carsCount - 1) * 100)}px` }, 2000 );
+        }
+    }
 };
 
 (function ($) {
@@ -70,7 +81,7 @@ let addVehicle = function (lane) {
  * @param millis
  * @returns {jQuery|HTMLElement}
  */
-jQuery.fn.onVehiclePassed = function (trigger, lane) {
+jQuery.fn.onVehiclePassed = function (lane) {
     let checkPoint = $(lane.light).offset()[lane.offset] + 50;
     let o = $(this[0]); // our jquery object
     if (o.length < 1) return o;
@@ -83,6 +94,7 @@ jQuery.fn.onVehiclePassed = function (trigger, lane) {
 
         if (lastPos < checkPoint && newPos >= checkPoint) {
             $(o).remove();
+            lane.carsCount--;
             clearInterval(interval);
         }
         lastPos = newPos;
@@ -106,8 +118,9 @@ $("#stop").click(function() {
     let lane = lanes[$(this).data("lane")];
     let checkPoint = $(lane.light).offset()[lane.offset] - 200;
     let position = 0;
+    //clearInterval(lane.interval);
+    lane.stopped = true;
     $(lane.id).find('.vehicle').each(function (index, item) {
-        clearInterval(lane.interval);
         if ($(item).offset()[lane.offset] < checkPoint) {
             item.style.animationPlayState="paused";
             $(item).animate({ "left": `+=${checkPoint - $(item).offset().left - (position * 100)}px` }, 2000 );
