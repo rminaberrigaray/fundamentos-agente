@@ -14,10 +14,10 @@
  };
 
  const MAX_LANE_CARS = 5;
+ const vehicleClasses = ['car-1', 'car-2', 'car-3', 'taxi'];
 
 let vehicleEl = '<div class="vehicle %vehicle-class%"></div>';
 //let emergencyClass = ['police', 'ambulance'];
-//let vehicleClass = ['car', 'truck'];
 //let priorityVehicles = ['taxi', 'emergency'];
 //let carSpace = 200;     //Space a car takes
 //let busSpace = 200;     //Space a bus takes
@@ -54,8 +54,8 @@ let trafficIntervalY;
 let addVehicle = function (lane) {
     //console.log(lane.carsCount);
     if (lane.carsCount < MAX_LANE_CARS) {
-        let vehicleClass = 'car';
-        let vehicleElement = `<div class="vehicle ${vehicleClass}"></div>`;
+        let vehicleClass = vehicleClasses[Math.floor(Math.random() * vehicleClasses.length)];
+        let vehicleElement = `<div class="vehicle car ${vehicleClass}"></div>`;
         let vehicle = $(vehicleElement).appendTo(`${lane.id}`);
         lane.carsCount++;
         $(vehicle).onVehiclePassed(lane);

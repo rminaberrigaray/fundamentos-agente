@@ -44,7 +44,7 @@
     &.car {
       background-image: url('../images/car-1.png');
   
-      @for $i from 1 through 7 {
+      @for $i from 1 through 3 {
         &.car-#{$i} {
           background-image: url('../images/car-#{$i}.png');
         }
