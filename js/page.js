@@ -82,7 +82,7 @@ let addVehicle = function (lane) {
  * @returns {jQuery|HTMLElement}
  */
 jQuery.fn.onVehiclePassed = function (lane) {
-    let checkPoint = $(lane.light).offset()[lane.offset] + 50;
+    let checkPoint = $(lane.light).offset()[lane.offset] - 190;
     let o = $(this[0]); // our jquery object
     if (o.length < 1) return o;
 
@@ -93,8 +93,11 @@ jQuery.fn.onVehiclePassed = function (lane) {
         let newPos = o.offset()[lane.offset];
 
         if (lastPos < checkPoint && newPos >= checkPoint) {
-            $(o).remove();
             lane.carsCount--;
+            $(o).animate({ "left": `+=500px` }, 4000 );
+            $(o).promise().done(function(){
+                $(o).remove();
+            });
             clearInterval(interval);
         }
         lastPos = newPos;
@@ -106,6 +109,7 @@ jQuery.fn.onVehiclePassed = function (lane) {
 $(".change-frecuency").click(function() {
     let frecuency = $(this).data("traffic");
     let lane = lanes[$(this).data("lane")];
+    lane.stopped = false;
 
     $(lane.id).find('.vehicle').each(function (index, item) {
         item.style.animationPlayState="running";
