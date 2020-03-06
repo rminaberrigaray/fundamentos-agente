@@ -32,8 +32,15 @@ let lanes = {
        carsCount: 0,
        light: "#traffic-light-1",
        offset: 'left',
+       checkPointOffset: -200,
        interval: null,
-       stopped: false
+       stopped: true,
+       vehicleHasPassed: function(lastPos, newPos, checkPoint) {
+          return (lastPos < (checkPoint + 10) && newPos >= (checkPoint + 10));
+       },
+       animateObject: function(distance, delta = 0) {
+          return {"left": `+=${distance - delta}`};
+       }
     },
     y: {
        id: "#lane-2",
@@ -41,8 +48,15 @@ let lanes = {
        carsCount: 0,
        light: "#traffic-light-2",
        offset: 'top',
+       checkPointOffset: 175,
        interval: null,
-       stopped: true
+       stopped: true,
+       vehicleHasPassed: function(lastPos, newPos, checkPoint) {
+          return (lastPos > (checkPoint - 10) && newPos <= (checkPoint - 10));
+       },
+       animateObject: function(distance, delta = 0) {
+          return {"bottom": `-=${distance + delta}`};
+       }
     }
 }
 let lane1Counter = 0;
@@ -52,7 +66,6 @@ let trafficIntervalX;
 let trafficIntervalY;
 
 let addVehicle = function (lane) {
-    //console.log(lane.carsCount);
     if (lane.carsCount < MAX_LANE_CARS) {
         let vehicleClass = vehicleClasses[Math.floor(Math.random() * vehicleClasses.length)];
         let vehicleElement = `<div class="vehicle car ${vehicleClass}"></div>`;
@@ -60,9 +73,10 @@ let addVehicle = function (lane) {
         lane.carsCount++;
         $(vehicle).onVehiclePassed(lane);
         if (lane.stopped) {
-            let checkPoint = $(lane.light).offset()[lane.offset] - 200;
+            let checkPoint = $(lane.light).offset()[lane.offset] + (lane.checkPointOffset);
             $(vehicle).css('animationPlayState', 'paused');
-            $(vehicle).animate({ "left": `+=${checkPoint - $(vehicle).offset().left - ((lane.carsCount - 1) * 100)}px` }, 2000 );
+            //$(vehicle).animate({ [lane.offset]: `+=${checkPoint - $(vehicle).offset()[lane.offset] - ((lane.carsCount - 1) * 100)}px` }, 2000 );
+            $(vehicle).animate(lane.animateObject(checkPoint - $(vehicle).offset()[lane.offset], (lane.carsCount - 1) * 100), 2000 );
         }
     }
 };
@@ -70,8 +84,7 @@ let addVehicle = function (lane) {
 (function ($) {
     $(document).ready(function () {
         lanes.x.interval = setInterval(addVehicle.bind(null, lanes.x), TRAFFIC_FRECUENCY.high);
-       // trafficIntervaly = setInterval(addVehicle.bind(null, lanes.y), TRAFFIC_FRECUENCY.high);
-
+        lanes.y.interval = setInterval(addVehicle.bind(null, lanes.y), TRAFFIC_FRECUENCY.high);
     });
 })(jQuery);
 
@@ -82,7 +95,7 @@ let addVehicle = function (lane) {
  * @returns {jQuery|HTMLElement}
  */
 jQuery.fn.onVehiclePassed = function (lane) {
-    let checkPoint = $(lane.light).offset()[lane.offset] - 190;
+    let checkPoint = $(lane.light).offset()[lane.offset] + lane.checkPointOffset;
     let o = $(this[0]); // our jquery object
     if (o.length < 1) return o;
 
@@ -92,9 +105,11 @@ jQuery.fn.onVehiclePassed = function (lane) {
 
         let newPos = o.offset()[lane.offset];
 
-        if (lastPos < checkPoint && newPos >= checkPoint) {
+        //if (lastPos < checkPoint && newPos >= checkPoint) {
+        if (lane.vehicleHasPassed(lastPos, newPos, checkPoint)) {
+            console.log("paso");
             lane.carsCount--;
-            $(o).animate({ "left": `+=500px` }, 4000 );
+            $(o).animate(lane.animateObject(500), 4000 );
             $(o).promise().done(function(){
                 $(o).remove();
             });
@@ -118,14 +133,14 @@ $(".change-frecuency").click(function() {
     lane.interval = setInterval(addVehicle.bind(null, lane), TRAFFIC_FRECUENCY[frecuency]);
 });
 
-$("#stop").click(function() {
+$(".stop").click(function() {
     let lane = lanes[$(this).data("lane")];
-    let checkPoint = $(lane.light).offset()[lane.offset] - 200;
+    let checkPoint = $(lane.light).offset()[lane.offset] + lane.checkPointOffset;
     let position = 0;
-    //clearInterval(lane.interval);
     lane.stopped = true;
     $(lane.id).find('.vehicle').each(function (index, item) {
-        if ($(item).offset()[lane.offset] < checkPoint) {
+        //if ($(item).offset()[lane.offset] < checkPoint) {
+        if (lane.vehicleHasPassed($(item).offset()[lane.offset] - 1, $(item).offset()[lane.offset], checkPoint)) {
             item.style.animationPlayState="paused";
             $(item).animate({ "left": `+=${checkPoint - $(item).offset().left - (position * 100)}px` }, 2000 );
             position++;

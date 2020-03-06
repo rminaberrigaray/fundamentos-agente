@@ -1,27 +1,25 @@
 .road-container {
   background-image: url("../images/roads2.png");
   background-size: 100% 100%;
-  display: flex;
-  flex-direction: column;
   height: 600px;
   min-height: 350px;
   width: 600px;
-  align-items: stretch;
-  justify-content: stretch;
-  overflow: hidden;
   max-width: 1920px;
   margin: 0 auto;
 }
 .road-container .lane {
-  box-sizing: border-box;
-  height: 150px;
-  margin-top: 46px;
-  display: flex;
-  align-items: center;
-  position: relative;
+  position: absolute;
+  overflow: hidden;
 }
-.road-container .lane .vehicle {
-  animation-duration: 10s;
+.road-container .lane#lane-1 {
+  margin-top: 46px;
+  height: 150px;
+  width: 600px;
+}
+.road-container .lane#lane-2 {
+  margin-left: 400px;
+  height: 600px;
+  width: 150px;
 }
 
 .vehicle {
@@ -32,9 +30,6 @@
   background-size: contain;
   background-repeat: no-repeat;
   position: absolute;
-  left: -200px;
-  top: calc(50% - 60px);
-  animation: move 10s linear;
 }
 .vehicle.car {
   background-image: url("../images/car-1.png");
@@ -66,9 +61,27 @@
   min-width: 170px;
 }
 
-@keyframes move {
+#lane-1 .vehicle {
+  left: -200px;
+  top: calc(50% - 60px);
+  animation: move-x 10s linear;
+}
+
+#lane-2 .vehicle {
+  bottom: -200px;
+  left: calc(50% - 60px);
+  transform: rotate(-90deg);
+  animation: move-y 10s linear;
+}
+
+@keyframes move-x {
   to {
     transform: translateX(2200px);
+  }
+}
+@keyframes move-y {
+  to {
+    transform: translateY(-2200px) rotate(-90deg);
   }
 }
 @keyframes move-bus {
@@ -76,7 +89,7 @@
     transform: translateX(2200px);
   }
 }
-.traffic-light-1 {
+#traffic-light-1 {
   position: absolute;
   background-image: url("../images/traffic-light-green.png");
   background-size: 100% 100%;
@@ -87,7 +100,7 @@
   margin-top: 148px;
 }
 
-.traffic-light-2 {
+#traffic-light-2 {
   position: absolute;
   background-image: url("../images/traffic-light-red.png");
   background-size: 100% 100%;
