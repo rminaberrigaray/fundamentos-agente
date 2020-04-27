@@ -35,10 +35,10 @@ let lanes = {
        checkPointOffset: -200,
        interval: null,
        stopped: true,
-       vehicleHasPassed: function(lastPos, newPos, checkPoint) {
-          return (lastPos < (checkPoint + 10) && newPos >= (checkPoint + 10));
+       vehicleHasPassed: function(position, checkPoint) {
+          return position >= (checkPoint + 10);
        },
-       animateObject: function(distance, delta = 0) {
+       animateObject: function(distance = 500, delta = 0) {
           return {"left": `+=${distance - delta}`};
        }
     },
@@ -50,11 +50,11 @@ let lanes = {
        offset: 'top',
        checkPointOffset: 175,
        interval: null,
-       stopped: true,
-       vehicleHasPassed: function(lastPos, newPos, checkPoint) {
-          return (lastPos > (checkPoint - 10) && newPos <= (checkPoint - 10));
+       stopped: false,
+       vehicleHasPassed: function(position, checkPoint) {
+          return position <= (checkPoint - 10);
        },
-       animateObject: function(distance, delta = 0) {
+       animateObject: function(distance = 0, delta = 0) {
           return {"bottom": `-=${distance + delta}`};
        }
     }
@@ -99,23 +99,20 @@ jQuery.fn.onVehiclePassed = function (lane) {
     let o = $(this[0]); // our jquery object
     if (o.length < 1) return o;
 
-    let lastPos = null;
     let interval = setInterval(function () {
         if (o == null || o.length < 1) return o; // abort if element is non existent
 
         let newPos = o.offset()[lane.offset];
 
-        //if (lastPos < checkPoint && newPos >= checkPoint) {
-        if (lane.vehicleHasPassed(lastPos, newPos, checkPoint)) {
+        if (lane.vehicleHasPassed(newPos, checkPoint)) {
             console.log("paso");
             lane.carsCount--;
-            $(o).animate(lane.animateObject(500), 4000 );
+            $(o).animate(lane.animateObject(), 4000 );
             $(o).promise().done(function(){
                 $(o).remove();
             });
             clearInterval(interval);
         }
-        lastPos = newPos;
     }, 50);
 
     return o;
@@ -138,15 +135,17 @@ $(".stop").click(function() {
     let checkPoint = $(lane.light).offset()[lane.offset] + lane.checkPointOffset;
     let position = 0;
     lane.stopped = true;
-    $(lane.id).find('.vehicle').each(function (index, item) {
-        //if ($(item).offset()[lane.offset] < checkPoint) {
-        if (lane.vehicleHasPassed($(item).offset()[lane.offset] - 1, $(item).offset()[lane.offset], checkPoint)) {
-            item.style.animationPlayState="paused";
-            $(item).animate({ "left": `+=${checkPoint - $(item).offset().left - (position * 100)}px` }, 2000 );
+    $(lane.id).find('.vehicle').each(function (index, vehicle) {
+        if (!lane.vehicleHasPassed($(vehicle).offset()[lane.offset], checkPoint)) {
+            vehicle.style.animationPlayState="paused";
+            $(vehicle).animate(lane.animateObject(checkPoint - $(vehicle).offset()[lane.offset], position * 100), 2000 );
             position++;
         }
     });
 });
+
+
+//----------------------------------------------------------------------------------------------------------------------
 
 function vehiclePassedBy(vehicle) {
     let lane = $(vehicle).closest('.lane').attr('id');
