@@ -87,6 +87,8 @@ let addVehicle = function (lane) {
     $(document).ready(function () {
         lanes.x.interval = setInterval(addVehicle.bind(null, lanes.x), TRAFFIC_FRECUENCY[lanes.x.frecuency]);
         lanes.y.interval = setInterval(addVehicle.bind(null, lanes.y), TRAFFIC_FRECUENCY[lanes.y.frecuency]);
+        countdown(50, "#light-counter-1");
+        countdown(85, "#light-counter-2");
     });
 })(jQuery);
 
@@ -146,6 +148,21 @@ $(".stop").click(function() {
         }
     });
 });
+
+function countdown(seconds, counterElementId) {
+    function tick() {
+        seconds--;
+        $(counterElementId).children().first().html(seconds);
+        if( seconds > 0 ) {
+            setTimeout(tick, 1000);
+        } else {
+            if(mins > 1){
+                countdown(mins-1);           
+            }
+        }
+    }
+    tick();
+}
 
 
 //----------------------------------------------------------------------------------------------------------------------

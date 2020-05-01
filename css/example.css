@@ -111,20 +111,26 @@
 
 .counter {
   font-family: chesstype;
-  font-size: 36px;
+  font-size: 26px;
   background: #4a4a4a;
   position: absolute;
+  width: 50px;
+  height: 50px;
+  border: 5px solid black;
+  text-align: center;
 }
 
 #light-counter-1 {
   color: #00ff00;
-  margin-left: 555px;
+  margin-left: 552px;
   margin-top: 200px;
+  transform: rotate(90deg);
 }
 
 #light-counter-2 {
   color: #fe0000;
-  margin-left: 560px;
+  margin-left: 552px;
+  margin-top: -5px;
 }
 
 /*.roads {
