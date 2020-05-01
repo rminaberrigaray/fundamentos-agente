@@ -117,6 +117,24 @@
     width: 40px;
     margin-left: 510px;
   }
+
+  .counter {
+    font-family: chesstype;
+    font-size: 36px;
+    background: #4a4a4a;
+    position: absolute;
+  }
+
+  #light-counter-1 {
+    color: #00ff00;
+    margin-left: 555px;
+    margin-top: 200px;
+  }
+  
+  #light-counter-2 {
+    color: #fe0000;
+    margin-left: 560px;
+  }
   
 
   /*.roads {

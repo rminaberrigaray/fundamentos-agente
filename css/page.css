@@ -35,3 +35,8 @@ body > .container {
 code {
   font-size: 80%;
 }
+
+@font-face {
+  font-family: 'chesstype';
+  src: URL('../fonts/chesstype.ttf') format('truetype');
+}

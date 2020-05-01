@@ -35,6 +35,7 @@ let lanes = {
        checkPointOffset: -200,
        interval: null,
        stopped: true,
+       frecuency: "high",
        vehicleHasPassed: function(position, checkPoint) {
           return position >= (checkPoint + 10);
        },
@@ -51,6 +52,7 @@ let lanes = {
        checkPointOffset: 175,
        interval: null,
        stopped: false,
+       frecuency: "medium",
        vehicleHasPassed: function(position, checkPoint) {
           return position <= (checkPoint - 10);
        },
@@ -83,8 +85,8 @@ let addVehicle = function (lane) {
 
 (function ($) {
     $(document).ready(function () {
-        lanes.x.interval = setInterval(addVehicle.bind(null, lanes.x), TRAFFIC_FRECUENCY.high);
-        lanes.y.interval = setInterval(addVehicle.bind(null, lanes.y), TRAFFIC_FRECUENCY.high);
+        lanes.x.interval = setInterval(addVehicle.bind(null, lanes.x), TRAFFIC_FRECUENCY[lanes.x.frecuency]);
+        lanes.y.interval = setInterval(addVehicle.bind(null, lanes.y), TRAFFIC_FRECUENCY[lanes.y.frecuency]);
     });
 })(jQuery);
 
@@ -122,12 +124,13 @@ $(".change-frecuency").click(function() {
     let frecuency = $(this).data("traffic");
     let lane = lanes[$(this).data("lane")];
     lane.stopped = false;
+    lane.frecuency = frecuency;
 
     $(lane.id).find('.vehicle').each(function (index, item) {
         item.style.animationPlayState="running";
     });
     clearInterval(lane.interval);
-    lane.interval = setInterval(addVehicle.bind(null, lane), TRAFFIC_FRECUENCY[frecuency]);
+    lane.interval = setInterval(addVehicle.bind(null, lane), TRAFFIC_FRECUENCY[lane.frecuency]);
 });
 
 $(".stop").click(function() {
