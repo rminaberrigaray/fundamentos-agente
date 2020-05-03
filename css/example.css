@@ -91,7 +91,6 @@
 }
 #traffic-light-1 {
   position: absolute;
-  background-image: url("../images/traffic-light-green.png");
   background-size: 100% 100%;
   height: 55px;
   width: 40px;
@@ -102,7 +101,6 @@
 
 #traffic-light-2 {
   position: absolute;
-  background-image: url("../images/traffic-light-red.png");
   background-size: 100% 100%;
   height: 55px;
   width: 40px;
@@ -121,16 +119,28 @@
 }
 
 #light-counter-1 {
-  color: #00ff00;
   margin-left: 552px;
   margin-top: 200px;
   transform: rotate(90deg);
 }
 
 #light-counter-2 {
-  color: #fe0000;
   margin-left: 552px;
   margin-top: -5px;
+}
+
+.green.traffic-light {
+  background-image: url("../images/traffic-light-green.png");
+}
+.green.counter {
+  color: #00ff00;
+}
+
+.red.traffic-light {
+  background-image: url("../images/traffic-light-red.png");
+}
+.red.counter {
+  color: #fe0000;
 }
 
 /*.roads {

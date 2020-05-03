@@ -31,10 +31,11 @@ let lanes = {
        axis: "x",
        carsCount: 0,
        light: "#traffic-light-1",
+       counter: "#light-counter-1",
        offset: 'left',
        checkPointOffset: -200,
        interval: null,
-       stopped: true,
+       stopped: false,
        frecuency: "high",
        vehicleHasPassed: function(position, checkPoint) {
           return position >= (checkPoint + 10);
@@ -48,10 +49,11 @@ let lanes = {
        axis: "y",
        carsCount: 0,
        light: "#traffic-light-2",
+       counter: "#light-counter-2",
        offset: 'top',
        checkPointOffset: 175,
        interval: null,
-       stopped: false,
+       stopped: true,
        frecuency: "medium",
        vehicleHasPassed: function(position, checkPoint) {
           return position <= (checkPoint - 10);
@@ -87,8 +89,8 @@ let addVehicle = function (lane) {
     $(document).ready(function () {
         lanes.x.interval = setInterval(addVehicle.bind(null, lanes.x), TRAFFIC_FRECUENCY[lanes.x.frecuency]);
         lanes.y.interval = setInterval(addVehicle.bind(null, lanes.y), TRAFFIC_FRECUENCY[lanes.y.frecuency]);
-        countdown(50, "#light-counter-1");
-        countdown(85, "#light-counter-2");
+        countdown(10, lanes.x, lanes.y);
+        //countdown(85, "#light-counter-2");
     });
 })(jQuery);
 
@@ -109,7 +111,6 @@ jQuery.fn.onVehiclePassed = function (lane) {
         let newPos = o.offset()[lane.offset];
 
         if (lane.vehicleHasPassed(newPos, checkPoint)) {
-            console.log("paso");
             lane.carsCount--;
             $(o).animate(lane.animateObject(), 4000 );
             $(o).promise().done(function(){
@@ -125,21 +126,33 @@ jQuery.fn.onVehiclePassed = function (lane) {
 $(".change-frecuency").click(function() {
     let frecuency = $(this).data("traffic");
     let lane = lanes[$(this).data("lane")];
-    lane.stopped = false;
     lane.frecuency = frecuency;
+    start(lane);
+});
+
+$(".stop").click(function() {
+    let lane = lanes[$(this).data("lane")];
+    stop(lane);
+});
+
+function start(lane) {
+    lane.stopped = false;
 
     $(lane.id).find('.vehicle').each(function (index, item) {
         item.style.animationPlayState="running";
     });
     clearInterval(lane.interval);
     lane.interval = setInterval(addVehicle.bind(null, lane), TRAFFIC_FRECUENCY[lane.frecuency]);
-});
+    $(`${lane.light}, ${lane.counter}`).removeClass("red");
+    $(`${lane.light}, ${lane.counter}`).addClass("green");
+}
 
-$(".stop").click(function() {
-    let lane = lanes[$(this).data("lane")];
+function stop(lane) {
     let checkPoint = $(lane.light).offset()[lane.offset] + lane.checkPointOffset;
     let position = 0;
     lane.stopped = true;
+    $(`${lane.light}, ${lane.counter}`).removeClass("green");
+    $(`${lane.light}, ${lane.counter}`).addClass("red");
     $(lane.id).find('.vehicle').each(function (index, vehicle) {
         if (!lane.vehicleHasPassed($(vehicle).offset()[lane.offset], checkPoint)) {
             vehicle.style.animationPlayState="paused";
@@ -147,18 +160,19 @@ $(".stop").click(function() {
             position++;
         }
     });
-});
+}
 
-function countdown(seconds, counterElementId) {
+function countdown(seconds, greenLane, redLane) {
     function tick() {
         seconds--;
-        $(counterElementId).children().first().html(seconds);
+        $(greenLane.counter).children().first().html(seconds);
+        $(redLane.counter).children().first().html(seconds + 1);
         if( seconds > 0 ) {
             setTimeout(tick, 1000);
         } else {
-            if(mins > 1){
-                countdown(mins-1);           
-            }
+            stop(greenLane);
+            start(redLane);
+            countdown(10, redLane, greenLane);
         }
     }
     tick();
@@ -293,12 +307,12 @@ function resetVehicleDisplay() {
         $('.road-container').removeClass('slow').addClass('slowest');
     }*/
 
-    $('#lane-1-count').html(lane1Counter);
+    /*$('#lane-1-count').html(lane1Counter);
     $('#lane-2-count').html(lane2Counter);
 
     $(document).find('.vehicle').each(function (index, item) {
         $(item).onVehiclePassed(vehiclePassedBy);
-    });
+    });*/
 }
 
 
