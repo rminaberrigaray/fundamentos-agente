@@ -156,6 +156,15 @@
     }
   }
   
+  .yellow {
+    &.traffic-light {
+      background-image: url('../images/traffic-light-yellow.png');
+    }
+    &.counter {
+      color: #feed00;
+    }
+  }
+  
 
   /*.roads {
     display: flex;

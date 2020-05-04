@@ -143,6 +143,13 @@
   color: #fe0000;
 }
 
+.yellow.traffic-light {
+  background-image: url("../images/traffic-light-yellow.png");
+}
+.yellow.counter {
+  color: #feed00;
+}
+
 /*.roads {
   display: flex;
   flex-direction: column;

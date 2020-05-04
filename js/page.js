@@ -12,6 +12,12 @@
      medium: 1500,
      high: 800
  };
+ 
+ const TIME_MODIFIER = {
+     low: 0,
+     medium: 0.5,
+     high: 1
+ };
 
  const MAX_LANE_CARS = 5;
  const vehicleClasses = ['car-1', 'car-2', 'car-3', 'taxi'];
@@ -110,7 +116,7 @@ jQuery.fn.onVehiclePassed = function (lane) {
 
         let newPos = o.offset()[lane.offset];
 
-        if (lane.vehicleHasPassed(newPos, checkPoint)) {
+        if (!lane.stopped && lane.vehicleHasPassed(newPos, checkPoint)) {
             lane.carsCount--;
             $(o).animate(lane.animateObject(), 4000 );
             $(o).promise().done(function(){
@@ -151,7 +157,7 @@ function stop(lane) {
     let checkPoint = $(lane.light).offset()[lane.offset] + lane.checkPointOffset;
     let position = 0;
     lane.stopped = true;
-    $(`${lane.light}, ${lane.counter}`).removeClass("green");
+    $(`${lane.light}, ${lane.counter}`).removeClass("yellow");
     $(`${lane.light}, ${lane.counter}`).addClass("red");
     $(lane.id).find('.vehicle').each(function (index, vehicle) {
         if (!lane.vehicleHasPassed($(vehicle).offset()[lane.offset], checkPoint)) {
@@ -167,15 +173,26 @@ function countdown(seconds, greenLane, redLane) {
         seconds--;
         $(greenLane.counter).children().first().html(seconds);
         $(redLane.counter).children().first().html(seconds + 1);
+        if( seconds == 2 ) {
+            $(`${greenLane.light}, ${greenLane.counter}`).removeClass("green");
+            $(`${greenLane.light}, ${greenLane.counter}`).addClass("yellow");
+        }
         if( seconds > 0 ) {
             setTimeout(tick, 1000);
         } else {
             stop(greenLane);
-            start(redLane);
-            countdown(10, redLane, greenLane);
+            setTimeout(() => {
+                start(redLane)
+                countdown(calculateSeconds(redLane, greenLane), redLane, greenLane);
+            }, 500);
         }
     }
     tick();
+}
+
+function calculateSeconds(greenLane, redLane) {
+    let additionalSecconds = (TIME_MODIFIER[greenLane.frecuency] - TIME_MODIFIER[redLane.frecuency]) * 10;
+    return 20 + additionalSecconds;
 }
 
 
