@@ -30,26 +30,7 @@
 
     <!-- Begin page content -->
     <main role="main" class="container">
-        <h1 class="mt-5">Semáforo inteligente</h1>
-        <a href="https://ashiqur.com/traffic-simulation-with-html-css/">MIRAR ESTO</a>
-
-        <!-- <div class="road-container" id="road">
-            <div class="lane regular lane-1" id="lane-1">
-                <div class="vehicle car"></div>
-                <div class="vehicle truck"></div>
-                <div class="vehicle-count">
-                    vehicles: <span id="lane-1-count">2</span>
-                </div>
-            </div>
-            <div class="lane regular lane-2" id="lane-2">
-                <div class="vehicle car"></div>
-                <div class="vehicle car car-3"></div>
-                <div class="vehicle car car-5"></div>
-                <div class="vehicle-count">
-                    vehicles: <span id="lane-2-count">3</span>
-                </div>
-            </div>
-        </div> -->
+        <h1 class="mt-4">Semáforo inteligente</h1>
 
         <div class="road-container">
             <div class="traffic-light green" id="traffic-light-1"></div>
@@ -63,14 +44,54 @@
             <div class="lane" id="lane-1"></div>
             <div class="lane" id="lane-2"></div>
         </div>
-
-        <button class="change-frecuency" data-lane="x" data-traffic="low">Tráfico bajo</button>
-        <button class="change-frecuency" data-lane="x" data-traffic="medium">Tráfico medio</button>
-        <button class="change-frecuency" data-lane="x" data-traffic="high">Tráfico alto</button>
-        <button class="stop" data-lane="x">Detener X</button>
-        <button class="stop" data-lane="y">Detener Y</button>
-        
-
+        <div class="row">
+            <div class="col-sm m-4 p-2 border">
+                <p><b> Tráfico calle horizontal </b></p>
+                <div class="form-check form-check-inline">
+                    <div class="mr-5">
+                        <input class="form-check-input" type="radio" name="frecuency-x" data-lane="x" id="x-low" value="low">
+                        <label class="form-check-label" for="x-low">
+                            Bajo
+                        </label>
+                    </div>
+                    <div class="mr-5">
+                        <input class="form-check-input" type="radio" name="frecuency-x" data-lane="x" id="x-medium" value="medium">
+                        <label class="form-check-label" for="x-medium">
+                            Medio
+                        </label>
+                    </div>
+                    <div class="mr-5">
+                        <input class="form-check-input" type="radio" name="frecuency-x" data-lane="x" id="x-high" value="high">
+                        <label class="form-check-label" for="x-high">
+                            Alto
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm m-4 p-2 border">
+                <p><b> Tráfico calle vertical </b></p>
+                <div class="form-check form-check-inline">
+                    <div class="mr-5">
+                        <input class="form-check-input" type="radio" name="frecuency-y" data-lane="y" id="y-low" value="low">
+                        <label class="form-check-label" for="y-low">
+                            Bajo
+                        </label>
+                    </div>
+                    <div class="mr-5">
+                        <input class="form-check-input" type="radio" name="frecuency-y" data-lane="y" id="y-medium" value="medium">
+                        <label class="form-check-label" for="y-medium">
+                            Medio
+                        </label>
+                    </div>
+                    <div class="mr-5">
+                        <input class="form-check-input" type="radio" name="frecuency-y" data-lane="y" id="y-high" value="high">
+                        <label class="form-check-label" for="y-high">
+                            Alto
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
     </main>
 
 
@@ -86,6 +107,8 @@
     <script src="./js/popper.min.js"></script>
     <script src="./js/bootstrap.min.js"></script>
 
+    <script src="./js/Vehicle.js"></script>
+    <script src="./js/Lane.js"></script>
     <script src="./js/page.js"></script>
 
 </body>
