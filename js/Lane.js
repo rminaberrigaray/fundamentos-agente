@@ -1,3 +1,12 @@
+/**
+ * Lane classes. HorizontalLane and VerticalLane.
+ * 
+ * Logic to add vehicles, start and stop traffic.
+ *
+ * @author Rodrigo Minaberrigaray <rodrigo.minaberrigaray@gmail.com>
+ * @author_url https://github.com/rminaberrigaray
+ **/
+
 let addVehicle = function (lane) {
     if (lane.carsCount < MAX_LANE_CARS) {
         let vehicle = new Vehicle();

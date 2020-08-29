@@ -1,8 +1,6 @@
 /**
- * Traffic animations and lights control
+ * Control of page and events. Environment setup and lights control.
  *
- * Some of the code was taken and adapted from https://github.com/ashiqur-rony/css-traffic-simulator
- * 
  * @author Rodrigo Minaberrigaray <rodrigo.minaberrigaray@gmail.com>
  * @author_url https://github.com/rminaberrigaray
  **/
@@ -35,7 +33,7 @@ $("input[type=radio][name^=frecuency]").change(function() {
     let lane = lanes[$(this).data("lane")];
     lane.frecuency = frecuency;
     
-    // Si no esta detenida, la reinicio para que se actualice la frecuencia
+    // If lane not stopped, restart to update frecuency
     if(!lane.stopped) {
         lane.start()
     }

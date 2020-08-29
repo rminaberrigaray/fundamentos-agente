@@ -1,32 +1,11 @@
 /**
- * Extension to handle element passed out of viewport
- * @param trigger
- * @param millis
- * @returns {jQuery|HTMLElement}
- */
-jQuery.fn.onVehiclePassed = function (lane) {
-    let checkPoint = $(lane.light).offset()[lane.offset] + lane.checkPointOffset;
-    let o = $(this[0]); // our jquery object
-    if (o.length < 1) return o;
-
-    let interval = setInterval(function () {
-        if (o == null || o.length < 1) return o; // abort if element is non existent
-
-        let newPos = o.offset()[lane.offset];
-
-        if (!lane.stopped && lane.vehicleHasPassed(newPos, checkPoint)) {
-            lane.carsCount--;
-            $(o).animate(lane.animateObject(), 4000 );
-            $(o).promise().done(function(){
-                $(o).remove();
-            });
-            clearInterval(interval);
-        }
-    }, 50);
-
-    return o;
-};
-
+ * Vehicle class.
+ * 
+ * Logic to generate vehicles, add them to lanes or stop their animations.
+ *
+ * @author Rodrigo Minaberrigaray <rodrigo.minaberrigaray@gmail.com>
+ * @author_url https://github.com/rminaberrigaray
+ **/
 const vehicleClasses = ['car-1', 'car-2', 'car-3', 'taxi'];
 
 class Vehicle {
@@ -55,3 +34,32 @@ class Vehicle {
         );
     }
 }
+
+/**
+ * Extension to handle element passed out of viewport
+ * @param trigger
+ * @param millis
+ * @returns {jQuery|HTMLElement}
+ */
+jQuery.fn.onVehiclePassed = function (lane) {
+    let checkPoint = $(lane.light).offset()[lane.offset] + lane.checkPointOffset;
+    let o = $(this[0]); // our jquery object
+    if (o.length < 1) return o;
+
+    let interval = setInterval(function () {
+        if (o == null || o.length < 1) return o; // abort if element is non existent
+
+        let newPos = o.offset()[lane.offset];
+
+        if (!lane.stopped && lane.vehicleHasPassed(newPos, checkPoint)) {
+            lane.carsCount--;
+            $(o).animate(lane.animateObject(), 4000 );
+            $(o).promise().done(function(){
+                $(o).remove();
+            });
+            clearInterval(interval);
+        }
+    }, 50);
+
+    return o;
+};
